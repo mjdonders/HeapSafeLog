@@ -35,8 +35,8 @@ void setup() {
 	MDO::logger().println("Formatting output, floating point:");
 	double dTest = 3.14159265;
 	MDO::logger().println("  ", dTest);								//without formatter, defaulting to standard Arduino output
-	MDO::logger().println("  ", MDO::f(dTest, 1));					//with formatter, the '1' is the amount of numbers after the '.' (so 3.1 in this case)
-	MDO::logger().println("  ", MDO::f(dTest, 4));					//with formatter (giving 3.1416)
+	MDO::logger().println("  ", MDO::flt(dTest, 1));				//with formatter, the '1' is the amount of numbers after the '.' (so 3.1 in this case)
+	MDO::logger().println("  ", MDO::flt(dTest, 4));				//with formatter (giving 3.1416)
 }
 
 void loop() {

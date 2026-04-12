@@ -69,7 +69,7 @@ struct Float {
     int precision;
 };
 
-inline Float f(double v, int prec = 2) { return {v, prec}; }
+inline Float flt(double v, int prec = 2) { return {v, prec}; }
 
 class Logger;
 
@@ -107,7 +107,7 @@ class Logger {
 
 		//overload for Printable
 		void writeOne(const MDO::Printable& value) {
-			print(value);
+			value.printTo(*this);
 		}
 		
 		//hexadecimal integer types
@@ -115,24 +115,43 @@ class Logger {
 		typename std::enable_if<is_integer<T>::value, void>::type
 		writeOne(Hex<T> h) {
 			using U = typename std::make_unsigned<typename std::decay<T>::type>::type;
-			printWithPadding(static_cast<U>(h.value), h.width, 16);
+			constexpr int base = 16;
+			printWithPadding(static_cast<U>(h.value), h.width, base);
 		}
 		
 		//decimal integer types
 		template<typename T>
 		typename std::enable_if<is_integer<T>::value, void>::type
 		writeOne(Dec<T> d) {
+			constexpr int base = 10;
 			if (d.value < 0) {
 				m_pLog->print('-');
-				printWithPadding(static_cast<uint64_t>(-d.value), d.width, 10);
+				printWithPadding(static_cast<uint64_t>(-d.value), d.width, base);
 			} else {
-				printWithPadding(static_cast<uint64_t>(d.value), d.width, 10);
+				printWithPadding(static_cast<uint64_t>(d.value), d.width, base);
 			}
 		}
 		
 		//floating point
 		void writeOne(Float fval) {
-			m_pLog->print(fval.value, fval.precision);
+			if (m_pLog) {
+				//start with specials
+				if (isnan(fval.value)) {
+					m_pLog->print("nan");
+					return;
+				}
+
+				if (isinf(fval.value)) {
+					if (fval.value < 0) {
+						m_pLog->print("-inf");
+					} else {
+						m_pLog->print("inf");
+					}
+					return;
+				}
+				
+				m_pLog->print(fval.value, fval.precision);
+			}
 		}		
 
 		//overload for everything else
@@ -191,7 +210,9 @@ class Logger {
 
 		//Printable support
 		void print(const MDO::Printable& oToPrint) {
-			oToPrint.printTo(*this);
+			if (m_pLog) {
+				oToPrint.printTo(*this);
+			}
 		}
 
 		void println(const MDO::Printable& oToPrint) {
@@ -234,9 +255,9 @@ class Logger {
 	}
 
 	//can ease debugging: wait for a serial command to start/continue with our program
-	inline void debugWaitForStart(HardwareSerial& oSerialPort, unsigned long ulMaxTimeout = 10000, char cStartCharacter = 's') {
+	inline void debugWaitForStart(HardwareSerial& oSerialPort, uint32_t ulMaxTimeout = 10000, char cStartCharacter = 's') {
 		bool bDone = false;
-		const unsigned long ulStart = millis();
+		const uint32_t ulStart = millis();
 		while (!bDone) {
 			if (oSerialPort.available() > 0) {
 				char cIncoming = oSerialPort.read();
