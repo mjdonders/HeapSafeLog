@@ -1,40 +1,32 @@
 # HeapSafeLog
 
-A lightweight, heap-safe logging library for Arduino.
+HeapSafeLog is a lightweight, heap-safe logging library for Arduino designed to avoid String usage and prevent heap fragmentation.
 
-## 🚀 Why HeapSafeLog?
-
-Most Arduino logging approaches rely on `String`, which can cause **heap fragmentation** and instability over time.
-
-HeapSafeLog avoids this completely by:
-- ❌ No use of `String`
-- ✅ Variadic logging (`print(a, b, c)`)
-- ✅ Zero heap fragmentation risk
-- ✅ Arduino-native (`Print` based)
-- ✅ Custom printable objects support
+It provides a simple variadic logging API with support for custom formatted types such as hex, decimal, and floating-point wrappers.
 
 ---
 
-## 📦 Features
+## ✨ Features
 
-- Variadic logging interface
-- Log levels: Debug, Info, Warn, Error
-- No dynamic memory usage
-- Compatible with all `Print` implementations (Serial, WiFiClient, etc.)
-- Extendable via `Printable` interface
-- Has some formatters, like hexadecimal print options, and providing of the width of the output (integer, float)
+- 🚫 No `String` usage (heap fragmentation safe)
+- ⚡ Variadic logging API
+- 🧠 Arduino `Print` compatible backend
+- 🔢 Built-in formatting helpers (hex / dec / float)
+- 🧩 Custom printable interface support
+- 📦 Minimal overhead, embedded-friendly design
 
 ---
 
-
-## 🧪 Usage
+## 🚀 Basic Usage
 
 ```cpp
 #include <HeapSafeLog.h>
 
+using namespace MDO;
+
 void setup() {
     Serial.begin(115200);
-    MDO::logger().begin(Serial, 115200);
+    logger().begin(Serial, 115200);
 
-    MDO::logger().println("Hello", " ", "world", "!", 42);
+    logger().println("Hello HeapSafeLog!");
 }
