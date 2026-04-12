@@ -25,7 +25,6 @@ It provides a simple variadic logging API with support for custom formatted type
 using namespace MDO;
 
 void setup() {
-    Serial.begin(115200);
     logger().begin(Serial, 115200);
 
     logger().println("Hello HeapSafeLog!");
