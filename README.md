@@ -28,4 +28,9 @@ void setup() {
     logger().begin(Serial, 115200);
 
     logger().println("Hello HeapSafeLog!");
+	
+	int iValue1 = 6;
+	int iValue2 = 42;
+	logger().println("Some variables for debug purposes:");
+	logger().println("variable 1 value: ", iValue1, " and value2 in hex: ", MDO::hex(iValue2));
 }
