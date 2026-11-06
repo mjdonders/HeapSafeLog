@@ -40,16 +40,19 @@ void Logger::setMinLogLevel(LogLevel eLevel) {
 
 void Logger::begin(HardwareSerial& oSerialPort, uint32_t uiBaud) {
 	oSerialPort.begin(uiBaud);
-	attach(oSerialPort);	
+	begin(oSerialPort);	
 }
 
 //so this can also be used like:
 //   WiFiClient client;
-//   logger().attach(client);
+//   logger().begin(client);
 // or
 //   File file = SD.open("log.txt");
-//   logger().attach(file);
-void Logger::attach(Print& output) {
+//   logger().begin(file);
+//
+//use this method when the above begin provides the following: error: cannot convert 'HWCDC' to 'HardwareSerial&'
+//in this case, do Serial.begin(115200) first, and call this begin after.
+void Logger::begin(Print& output) {
     m_pLog = &output;
 }
 

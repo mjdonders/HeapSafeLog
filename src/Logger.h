@@ -240,7 +240,7 @@ class Logger {
 
 		void			setMinLogLevel(LogLevel eLevel);
 		void			begin(HardwareSerial& oSerialPort, uint32_t uiBaud);
-		void			attach(Print& output);
+		void			begin(Print& output);
 		static Logger&	instance(); 
 	
 	private:

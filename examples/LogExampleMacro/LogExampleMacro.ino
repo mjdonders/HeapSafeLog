@@ -9,7 +9,14 @@
 #include <HeapSafeLog.h>					
 
 void setup() {
-	MDO::logger().begin(Serial, 115200);
+#if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT
+    //native USB CDC, like used for the ESP32S3, for example
+    Serial.begin(115200);
+    MDO::logger().begin(Serial);
+#else
+    //hardware UART
+    MDO::logger().begin(Serial, 115200);
+#endif
 	
 	MDO_WARN("Starting program");	//is printed
 	MDO_INFO("Starting program2");	//is not printed (nor part of the final binary)

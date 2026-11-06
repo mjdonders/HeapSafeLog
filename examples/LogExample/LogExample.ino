@@ -1,8 +1,17 @@
-
+#define MDO_LOG_LEVEL MDO_LOG_LEVEL_WARN
 #include <HeapSafeLog.h>
 
 void setup() {
-	MDO::logger().begin(Serial, 115200);
+	
+#if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT
+    //native USB CDC, like used for the ESP32S3, for example
+    Serial.begin(115200);
+    MDO::logger().begin(Serial);
+#else
+    //hardware UART
+    MDO::logger().begin(Serial, 115200);
+#endif	
+
 
 	MDO::logger().println("Hello world!");							//just one parameter
 	MDO::logger().println("Hello", " ", "world", "!", 42);			//several parameters, other data types
