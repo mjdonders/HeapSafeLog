@@ -76,9 +76,10 @@ class Logger;
 /**
  * Interface class used to be able to print 'all' (which obeys this interface)
  */
-class Printable {
+class LogPrintable {
 	public:
 		virtual void printTo(Logger& oLogSink) const = 0;
+		virtual ~LogPrintable() = default;
 };
 
 /**
@@ -105,8 +106,8 @@ class Logger {
 
 		bool shouldLog(LogLevel eLevel) const;
 
-		//overload for Printable
-		void writeOne(const MDO::Printable& value) {
+		//overload for LogPrintable
+		void writeOne(const MDO::LogPrintable& value) {
 			value.printTo(*this);
 		}
 		
@@ -157,7 +158,7 @@ class Logger {
 		//overload for everything else
 		template<typename T>
 		typename std::enable_if<
-			!std::is_base_of<MDO::Printable, typename std::decay<T>::type>::value,
+			!std::is_base_of<MDO::LogPrintable, typename std::decay<T>::type>::value,
 			void
 		>::type
 		writeOne(T&& value) {
@@ -208,14 +209,14 @@ class Logger {
 			}
 		}
 
-		//Printable support
-		void print(const MDO::Printable& oToPrint) {
+		//LogPrintable support
+		void print(const MDO::LogPrintable& oToPrint) {
 			if (m_pLog) {
 				oToPrint.printTo(*this);
 			}
 		}
 
-		void println(const MDO::Printable& oToPrint) {
+		void println(const MDO::LogPrintable& oToPrint) {
 			if ((m_pLog) && (m_eMinLogLevel != LogLevel::None)) {
 				print(oToPrint);
 				m_pLog->println();
